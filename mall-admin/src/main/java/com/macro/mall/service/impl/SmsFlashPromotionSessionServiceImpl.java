@@ -21,20 +21,20 @@ import java.util.List;
 @Service
 public class SmsFlashPromotionSessionServiceImpl implements SmsFlashPromotionSessionService {
     @Autowired
-    private SmsFlashPromotionSessionMapper promotionSessionMapper;
+    private SmsFlashPromotionSessionMapper smsFlashPromotionSessionMapper;
     @Autowired
     private SmsFlashPromotionProductRelationService relationService;
 
     @Override
     public int create(SmsFlashPromotionSession promotionSession) {
         promotionSession.setCreateTime(new Date());
-        return promotionSessionMapper.insert(promotionSession);
+        return smsFlashPromotionSessionMapper.insert(promotionSession);
     }
 
     @Override
     public int update(Long id, SmsFlashPromotionSession promotionSession) {
         promotionSession.setId(id);
-        return promotionSessionMapper.updateByPrimaryKey(promotionSession);
+        return smsFlashPromotionSessionMapper.updateByPrimaryKey(promotionSession);
     }
 
     @Override
@@ -42,23 +42,23 @@ public class SmsFlashPromotionSessionServiceImpl implements SmsFlashPromotionSes
         SmsFlashPromotionSession promotionSession = new SmsFlashPromotionSession();
         promotionSession.setId(id);
         promotionSession.setStatus(status);
-        return promotionSessionMapper.updateByPrimaryKeySelective(promotionSession);
+        return smsFlashPromotionSessionMapper.updateByPrimaryKeySelective(promotionSession);
     }
 
     @Override
     public int delete(Long id) {
-        return promotionSessionMapper.deleteByPrimaryKey(id);
+        return smsFlashPromotionSessionMapper.deleteByPrimaryKey(id);
     }
 
     @Override
     public SmsFlashPromotionSession getItem(Long id) {
-        return promotionSessionMapper.selectByPrimaryKey(id);
+        return smsFlashPromotionSessionMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public List<SmsFlashPromotionSession> list() {
         SmsFlashPromotionSessionExample example = new SmsFlashPromotionSessionExample();
-        return promotionSessionMapper.selectByExample(example);
+        return smsFlashPromotionSessionMapper.selectByExample(example);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SmsFlashPromotionSessionServiceImpl implements SmsFlashPromotionSes
         List<SmsFlashPromotionSessionDetail> result = new ArrayList<>();
         SmsFlashPromotionSessionExample example = new SmsFlashPromotionSessionExample();
         example.createCriteria().andStatusEqualTo(1);
-        List<SmsFlashPromotionSession> list = promotionSessionMapper.selectByExample(example);
+        List<SmsFlashPromotionSession> list = smsFlashPromotionSessionMapper.selectByExample(example);
         for (SmsFlashPromotionSession promotionSession : list) {
             SmsFlashPromotionSessionDetail detail = new SmsFlashPromotionSessionDetail();
             BeanUtils.copyProperties(promotionSession, detail);

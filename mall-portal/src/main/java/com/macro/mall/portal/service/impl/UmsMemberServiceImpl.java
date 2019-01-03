@@ -31,9 +31,9 @@ import java.util.Random;
 @Service
 public class UmsMemberServiceImpl implements UmsMemberService {
     @Autowired
-    private UmsMemberMapper memberMapper;
+    private UmsMemberMapper umsMemberMapper;
     @Autowired
-    private UmsMemberLevelMapper memberLevelMapper;
+    private UmsMemberLevelMapper umsMemberLevelMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -47,7 +47,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public UmsMember getByUsername(String username) {
         UmsMemberExample example = new UmsMemberExample();
         example.createCriteria().andUsernameEqualTo(username);
-        List<UmsMember> memberList = memberMapper.selectByExample(example);
+        List<UmsMember> memberList = umsMemberMapper.selectByExample(example);
         if (!CollectionUtils.isEmpty(memberList)) {
             return memberList.get(0);
         }
@@ -56,7 +56,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Override
     public UmsMember getById(Long id) {
-        return memberMapper.selectByPrimaryKey(id);
+        return umsMemberMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         UmsMemberExample example = new UmsMemberExample();
         example.createCriteria().andUsernameEqualTo(username);
         example.or(example.createCriteria().andPhoneEqualTo(telephone));
-        List<UmsMember> umsMembers = memberMapper.selectByExample(example);
+        List<UmsMember> umsMembers = umsMemberMapper.selectByExample(example);
         if (!CollectionUtils.isEmpty(umsMembers)) {
             return new CommonResult().failed("该用户已经存在");
         }
@@ -83,11 +83,11 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         //获取默认会员等级并设置
         UmsMemberLevelExample levelExample = new UmsMemberLevelExample();
         levelExample.createCriteria().andDefaultStatusEqualTo(1);
-        List<UmsMemberLevel> memberLevelList = memberLevelMapper.selectByExample(levelExample);
+        List<UmsMemberLevel> memberLevelList = umsMemberLevelMapper.selectByExample(levelExample);
         if (!CollectionUtils.isEmpty(memberLevelList)) {
             umsMember.setMemberLevelId(memberLevelList.get(0).getId());
         }
-        memberMapper.insert(umsMember);
+        umsMemberMapper.insert(umsMember);
         umsMember.setPassword(null);
         return new CommonResult().success("注册成功",null);
     }
@@ -109,7 +109,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public CommonResult updatePassword(String telephone, String password, String authCode) {
         UmsMemberExample example = new UmsMemberExample();
         example.createCriteria().andPhoneEqualTo(telephone);
-        List<UmsMember> memberList = memberMapper.selectByExample(example);
+        List<UmsMember> memberList = umsMemberMapper.selectByExample(example);
         if(CollectionUtils.isEmpty(memberList)){
             return new CommonResult().failed("该账号不存在");
         }
@@ -119,7 +119,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         }
         UmsMember umsMember = memberList.get(0);
         umsMember.setPassword(passwordEncoder.encodePassword(password,null));
-        memberMapper.updateByPrimaryKeySelective(umsMember);
+        umsMemberMapper.updateByPrimaryKeySelective(umsMember);
         return new CommonResult().success("密码修改成功",null);
     }
 
@@ -136,7 +136,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         UmsMember record=new UmsMember();
         record.setId(id);
         record.setIntegration(integration);
-        memberMapper.updateByPrimaryKeySelective(record);
+        umsMemberMapper.updateByPrimaryKeySelective(record);
     }
 
     //对输入的验证码进行校验
